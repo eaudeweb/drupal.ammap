@@ -1,0 +1,120 @@
+<?php
+/**
+ * @file
+ * Code for the Ammap Module.
+ */
+define ('DRUPAL_AMMAP_NAME', 'drupal_ammap');
+
+/**
+ * Implements hook_menu().
+ */
+function drupal_ammap_menu() {
+    $items = array();
+    $items['admin/config/content/drupal_ammap'] = array(
+        'title' => 'AmMap',
+        'description' => 'AmMap config',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('drupal_ammap_form'),
+        'access arguments' => array('access administration pages'),
+        'type' => MENU_NORMAL_ITEM,
+    );
+    return $items;
+}
+
+/**
+ * Page callback: CMS AmMap settings
+ *
+ * @see current_posts_menu()
+ */
+function drupal_ammap_form($form, &$form_state) {
+    $form['drupal_ammap_color_default'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Default color'),
+        '#default_value' => variable_get('drupal_ammap_color_default', "#003871"),
+        '#size' => 7,
+        '#maxlength' => 7,
+        '#description' => t('Default color'),
+        '#required' => TRUE,
+    );
+    return system_settings_form($form);
+}
+
+/**
+ * @param $data
+ * @param array $settings
+ * @param null $legend
+ *
+ * $settings array(
+ *      'color_default' - string color
+ * ,    'legend' - bool - if render the legend or not
+ * $legend
+ *      array(
+ *          array(  'name'  - string    - Legend title to show - must be the same as in $area['legend']
+ * ,                'color' - string    - color for legend
+ * $legend['default'] legend for no legend areas
+ *
+ * @return string
+ */
+function drupal_ammap_render_map($data, $settings = array(), $legend = null) {
+    if(!isset($settings['color_default'])) {
+        $settings['color_default'] = variable_get('drupal_ammap_color_default', "#003871");
+    }
+
+    $path = drupal_get_path('module', DRUPAL_AMMAP_NAME);
+    drupal_add_js("$path/includes/ammap/ammap.js");
+    drupal_add_js("$path/includes/ammap/worldLow.js");
+    drupal_add_js("$path/includes/drupal_ammap.js");
+    drupal_add_js(array('drupal_ammap' => array('ammapPath' => '/' . $path . '/includes/ammap')), 'setting');
+
+    $data_legend = array();
+    $data_legend['default'] = array(
+        'name'  => (isset($legend['default'])) ? $legend['default']['color'] : t('Other'),
+        'color' => (isset($legend['default'])) ? $legend['default']['color'] : $settings['color_default'],
+    );
+    foreach($data as &$area) {
+        //if legend field exists for area
+        if ( isset($area['legend']) && !empty($area['legend']) ) {
+            //construct legend array
+            if (!isset($data_legend[$area['legend']])) {
+                if ($legend && isset($legend[$area['legend']])) {
+                    $legend_entry = array ('name' => $legend[$area['legend']]['name']);
+                    if (isset($legend[$area['legend']]['color'])) {
+                        $legend_entry['color'] = $legend[$area['legend']]['color'];
+                    }
+                    else {
+                        $legend_entry['color'] = drupal_ammap_random_color();
+                    }
+                } else {
+                    $legend_entry = array ('name' => $area['legend']);
+                    $legend_entry['color'] = drupal_ammap_random_color();
+                }
+            }
+            $data_legend[$area['legend']] = $legend_entry;
+            $area['color'] = $data_legend[$area['legend']]['color'];
+
+        // assign default color
+        } else {
+            $area['color'] = $data_legend['default']['color'];
+            $settings['show_default_legend'] = true;
+        }
+    }
+
+    if (!isset($settings['show_default_legend'])) {
+        unset($data_legend['default']);
+    }
+
+    drupal_add_js(array('drupal_ammap' => array('settings' => $settings )), 'setting');
+    drupal_add_js(array('drupal_ammap' => array('legend' => $data_legend )), 'setting');
+    drupal_add_js(array('drupal_ammap' => array('ammapData' => $data )), 'setting');
+    return theme_render_template($path . '/drupal_ammap.tpl.php',array());
+}
+
+function drupal_ammap_random_color() {
+    $possibilities = array(1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F" );
+    shuffle($possibilities);
+    $color = "#";
+    for($i=1;$i<=6;$i++){
+        $color .= $possibilities[rand(0,14)];
+    }
+    return $color;
+}

@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Implements hook_uninstall()
+ * @todo Test this code
+ */
+function drupal_ammap_uninstall() {
+}
+
+
+/**
+ * Implementes hook_install()
+ */
+function drupal_ammap_install() {
+
+}
