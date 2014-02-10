@@ -28,7 +28,7 @@ AmCharts.ready(function() {
                 color: area.color,
                 title: (typeof area.title == 'undefined' || area.title == '') ? "" : area.title ,
                 customData: (typeof area.customData == 'undefined' || area.customData == '') ? "" : area.customData ,
-                url: (typeof area.url == 'undefined' || area.url == '') ? "" : area.url,
+                url: (typeof area.url == 'undefined' || area.url == '') ? "" : '/' + area.url,
                 selectable: false,
                 autoZoom: false
             }
@@ -72,7 +72,7 @@ AmCharts.ready(function() {
             horizontalGap: 10,
             data: (function () {
                 var legend_data = new Array();
-                jQuery.each(Drupal.settings.drupal_ammap.legend, function (index, legend){
+                jQuery.each(Drupal.settings.drupal_ammap.legend, function (index, legend) {
                     legend_data.push({
                         title: legend.name,
                         color: legend.color
@@ -84,8 +84,6 @@ AmCharts.ready(function() {
         // write the map to container div
         map.addLegend(legend);
     }
-        console.log(Drupal.settings.drupal_ammap.ammapData);
-
 
     map.write("drupal_ammap");
     map.zoomIn();

@@ -2,7 +2,11 @@
 /**
  * @file
  * Code for the Ammap Module.
+ *
+ * @author Dragos Dumitrescu
+ *
  */
+
 define ('DRUPAL_AMMAP_NAME', 'drupal_ammap');
 
 /**
@@ -59,7 +63,6 @@ function drupal_ammap_render_map($data, $settings = array(), $legend = null) {
     if(!isset($settings['color_default'])) {
         $settings['color_default'] = variable_get('drupal_ammap_color_default', "#003871");
     }
-
     $path = drupal_get_path('module', DRUPAL_AMMAP_NAME);
     drupal_add_js("$path/includes/ammap/ammap.js");
     drupal_add_js("$path/includes/ammap/worldLow.js");
@@ -88,8 +91,8 @@ function drupal_ammap_render_map($data, $settings = array(), $legend = null) {
                     $legend_entry = array ('name' => $area['legend']);
                     $legend_entry['color'] = drupal_ammap_random_color();
                 }
+                $data_legend[$area['legend']] = $legend_entry;
             }
-            $data_legend[$area['legend']] = $legend_entry;
             $area['color'] = $data_legend[$area['legend']]['color'];
 
         // assign default color
