@@ -32,12 +32,10 @@ function drupal_ammap_menu() {
  */
 function drupal_ammap_form($form, &$form_state) {
     $form['drupal_ammap_color_default'] = array(
-        '#type' => 'textfield',
-        '#title' => t('Default color'),
-        '#default_value' => variable_get('drupal_ammap_color_default', "#003871"),
-        '#size' => 7,
-        '#maxlength' => 7,
-        '#description' => t('Default color'),
+        '#type' => 'textarea',
+        '#title' => t('Default colors'),
+        '#default_value' => variable_get('drupal_ammap_color_default', "#6A9519, #003871, #C50049, #F5A200, #34B7C4"),
+        '#description' => t('Default colors - comma separated values'),
         '#required' => TRUE,
     );
     return system_settings_form($form);
@@ -61,8 +59,9 @@ function drupal_ammap_form($form, &$form_state) {
  */
 function drupal_ammap_render_map($data, $settings = array(), $legend = null) {
     if(!isset($settings['color_default'])) {
-        $settings['color_default'] = variable_get('drupal_ammap_color_default', "#003871");
+        $settings['color_default'] = variable_get('drupal_ammap_color_default', "#003871, #6A9519, #C50049, #F5A200, #34B7C4");
     }
+    $default_colors = explode(',', $settings['color_default']);
     $path = drupal_get_path('module', DRUPAL_AMMAP_NAME);
     drupal_add_js("$path/includes/ammap/ammap.js");
     drupal_add_js("$path/includes/ammap/worldLow.js");
@@ -72,7 +71,6 @@ function drupal_ammap_render_map($data, $settings = array(), $legend = null) {
     $data_legend = array();
     $data_legend['default'] = array(
         'name'  => (isset($legend['default'])) ? $legend['default']['color'] : t('Other'),
-        'color' => (isset($legend['default'])) ? $legend['default']['color'] : $settings['color_default'],
     );
     foreach($data as &$area) {
         //if legend field exists for area
@@ -85,11 +83,11 @@ function drupal_ammap_render_map($data, $settings = array(), $legend = null) {
                         $legend_entry['color'] = $legend[$area['legend']]['color'];
                     }
                     else {
-                        $legend_entry['color'] = drupal_ammap_random_color();
+                        $legend_entry['color'] = drupal_ammap_get_color($default_colors);
                     }
                 } else {
                     $legend_entry = array ('name' => $area['legend']);
-                    $legend_entry['color'] = drupal_ammap_random_color();
+                    $legend_entry['color'] = drupal_ammap_get_color($default_colors);
                 }
                 $data_legend[$area['legend']] = $legend_entry;
             }
@@ -97,6 +95,9 @@ function drupal_ammap_render_map($data, $settings = array(), $legend = null) {
 
         // assign default color
         } else {
+            if (!isset($data_legend['default']['color'])) {
+                $data_legend['default']['color'] = (isset($legend['default'])) ? $legend['default']['color'] : drupal_ammap_get_color($default_colors);
+            }
             $area['color'] = $data_legend['default']['color'];
             $settings['show_default_legend'] = true;
         }
@@ -120,4 +121,15 @@ function drupal_ammap_random_color() {
         $color .= $possibilities[rand(0,14)];
     }
     return $color;
+}
+function drupal_ammap_get_color(&$colors) {
+    if (!empty($colors)) {
+        reset($colors);
+        $curr_key = key($colors);
+        $return = $colors[$curr_key];
+        unset($colors[$curr_key]);
+        return $return;
+    } else {
+        return drupal_ammap_random_color();
+    }
 }

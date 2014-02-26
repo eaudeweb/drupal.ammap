@@ -62,7 +62,7 @@ AmCharts.ready(function() {
 
     if ( typeof Drupal.settings.drupal_ammap.settings.legend != 'undefined' && Drupal.settings.drupal_ammap.settings.legend == true  ) {
         var legend = {
-            width: 110 * Object.keys(Drupal.settings.drupal_ammap.legend).length,
+            width: 120 * Object.keys(Drupal.settings.drupal_ammap.legend).length,
             backgroundAlpha: 0.9,
             backgroundColor: "#FFFFFF",
             borderColor: "#666666",
@@ -86,6 +86,4 @@ AmCharts.ready(function() {
     }
 
     map.write("drupal_ammap");
-    map.zoomIn();
-
 });
