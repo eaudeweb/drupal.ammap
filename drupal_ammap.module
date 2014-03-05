@@ -38,6 +38,13 @@ function drupal_ammap_form($form, &$form_state) {
         '#description' => t('Default colors - comma separated values'),
         '#required' => TRUE,
     );
+    $form['drupal_ammap_no_data_text'] = array(
+        '#type' => 'textarea',
+        '#title' => t('No data text'),
+        '#default_value' => variable_get('drupal_ammap_no_data_text', "No data to display"),
+        '#description' => t('No data text'),
+        '#required' => TRUE,
+    );
     return system_settings_form($form);
 }
 
@@ -58,6 +65,15 @@ function drupal_ammap_form($form, &$form_state) {
  * @return string
  */
 function drupal_ammap_render_map($data, $settings = array(), $legend = null) {
+
+    if(!isset($settings['drupal_ammap_no_data_text'])) {
+        $settings['drupal_ammap_no_data_text'] = variable_get('drupal_ammap_no_data_text', "No data to display");
+    }
+
+    if (empty($data)) {
+        return $settings['drupal_ammap_no_data_text'];
+    }
+
     if(!isset($settings['color_default'])) {
         $settings['color_default'] = variable_get('drupal_ammap_color_default', "#003871, #6A9519, #C50049, #F5A200, #34B7C4");
     }
