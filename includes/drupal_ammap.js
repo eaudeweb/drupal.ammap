@@ -35,7 +35,7 @@ AmCharts.ready(function() {
         );
     });
     var amdataProvider = {
-        mapVar: AmCharts.maps.worldLow,
+        mapVar: AmCharts.maps.worldHigh,
         areas: areas
     };
 

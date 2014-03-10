@@ -80,7 +80,7 @@ function drupal_ammap_render_map($data, $settings = array(), $legend = null) {
     $default_colors = explode(',', $settings['color_default']);
     $path = drupal_get_path('module', DRUPAL_AMMAP_NAME);
     drupal_add_js("$path/includes/ammap/ammap.js");
-    drupal_add_js("$path/includes/ammap/worldLow.js");
+    drupal_add_js("$path/includes/ammap/worldHigh.js");
     drupal_add_js("$path/includes/drupal_ammap.js");
     drupal_add_js(array('drupal_ammap' => array('ammapPath' => '/' . $path . '/includes/ammap')), 'setting');
 
