@@ -85,42 +85,51 @@ function drupal_ammap_render_map($data, $settings = array(), $legend = null) {
     drupal_add_js(array('drupal_ammap' => array('ammapPath' => '/' . $path . '/includes/ammap')), 'setting');
 
     $data_legend = array();
-    $data_legend['default'] = array(
-        'name'  => (isset($legend['default'])) ? $legend['default']['color'] : t('Other'),
-    );
+    if (!empty($legend)) {
+        //sort legend by weight and assign colors
+        uasort($legend, 'drupal_ammap_cmp_weight');
+        $data_legend = $legend;
+        foreach ($data_legend as &$lg) {
+            if(empty($lg['color'])) {
+                $lg['color'] = drupal_ammap_get_color($default_colors);
+            }
+        }
+    }
+
     foreach($data as &$area) {
         //if legend field exists for area
         if ( isset($area['legend']) && !empty($area['legend']) ) {
-            //construct legend array
             if (!isset($data_legend[$area['legend']])) {
-                if ($legend && isset($legend[$area['legend']])) {
-                    $legend_entry = array ('name' => $legend[$area['legend']]['name']);
-                    if (isset($legend[$area['legend']]['color'])) {
-                        $legend_entry['color'] = $legend[$area['legend']]['color'];
-                    }
-                    else {
-                        $legend_entry['color'] = drupal_ammap_get_color($default_colors);
-                    }
-                } else {
-                    $legend_entry = array ('name' => $area['legend']);
-                    $legend_entry['color'] = drupal_ammap_get_color($default_colors);
-                }
+                //construct legend array
+                $legend_entry = array (
+                    'name' => $area['legend'],
+                    'color' => drupal_ammap_get_color($default_colors)
+                );
                 $data_legend[$area['legend']] = $legend_entry;
             }
             $area['color'] = $data_legend[$area['legend']]['color'];
-
-        // assign default color
         } else {
-            if (!isset($data_legend['default']['color'])) {
-                $data_legend['default']['color'] = (isset($legend['default'])) ? $legend['default']['color'] : drupal_ammap_get_color($default_colors);
+            //if no legend for area, assign it to default
+            if (empty($data_legend['default'])) {
+                $data_legend['default'] = array(
+                    'name'  => t('Other'),
+                    'color' => (!empty($legend['default']['color'])) ? $legend['default']['color'] : drupal_ammap_get_color($default_colors)
+                );
             }
             $area['color'] = $data_legend['default']['color'];
             $settings['show_default_legend'] = true;
         }
     }
 
-    if (!isset($settings['show_default_legend'])) {
+    if (!isset($settings['show_default_legend']) && !empty($data_legend['default'])) {
         unset($data_legend['default']);
+    }
+
+    //put default at the end of array
+    if (!empty($data_legend['default'])) {
+        $default = $data_legend['default'];
+        unset($data_legend['default']);
+        $data_legend []= $default;
     }
 
     drupal_add_js(array('drupal_ammap' => array('settings' => $settings )), 'setting');
@@ -133,7 +142,7 @@ function drupal_ammap_random_color() {
     $possibilities = array(1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F" );
     shuffle($possibilities);
     $color = "#";
-    for($i=1;$i<=6;$i++){
+    for( $i = 1; $i <= 6; $i++){
         $color .= $possibilities[rand(0,14)];
     }
     return $color;
@@ -148,4 +157,20 @@ function drupal_ammap_get_color(&$colors) {
     } else {
         return drupal_ammap_random_color();
     }
+}
+
+function drupal_ammap_cmp_weight($legend1, $legend2) {
+    if (!isset($legend1['weight']) && !isset($legend2['weight'])) {
+        return 0;
+    } else if (!isset($legend1['weight']) && isset($legend2['weight'])) {
+        return 1;
+    } else if (isset($legend1['weight']) && !isset($legend2['weight'])) {
+        return -1;
+    }
+
+    if ($legend1['weight'] == $legend2['weight']) {
+        return 0;
+    }
+
+    return ($legend1['weight'] < $legend2['weight']) ? -1 : 1;
 }
