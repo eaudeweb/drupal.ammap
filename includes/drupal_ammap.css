@@ -1,0 +1,9 @@
+#drupal_ammap_slider_max{
+    float: right;
+}
+#drupal_ammap_slider_min{
+    float: left;
+}
+.drupal_ammap_clear {
+    clear: both;
+}
