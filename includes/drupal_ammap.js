@@ -117,9 +117,13 @@ function drupal_ammap_get_data(ajax_endpoint, val) {
                 type: "POST",
                 url: Drupal.settings.drupal_ammap.ajax_url,
                 data: {
-                    data: response.data,
-                    legend: response.legend,
-                    settings: Drupal.settings.drupal_ammap.settings
+                    'ammap_data': JSON.stringify(
+                        {
+                            'data': response.data,
+                            'legend': response.legend,
+                            'settings': Drupal.settings.drupal_ammap.settings
+                        }
+                    )
                 },
                 success: function(response) {
                     drupal_ammap.dataProvider.areas = drupal_ammap_parse_areas(response.ammapData);

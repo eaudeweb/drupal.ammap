@@ -185,7 +185,7 @@ function drupal_ammap_parse_data(&$data, $settings, &$data_legend) {
  * Ajax callback for drupal_ammap_ajax_parse_data Menu
  */
 function drupal_ammap_ajax_parse_data() {
-    $param = $_POST;
+    $param = json_decode($_POST['ammap_data'], true);
     $data = array();
     $data_legend = array();
     $settings = array();
