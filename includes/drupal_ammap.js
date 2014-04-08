@@ -65,7 +65,8 @@ function drupal_ammap_parse_areas(data_areas) {
                 color: area.color,
                 title: (typeof area.title == 'undefined' || area.title == '') ? "" : area.title ,
                 customData: (typeof area.customData == 'undefined' || area.customData == '') ? "" : area.customData ,
-                url: (typeof area.url == 'undefined' || area.url == '') ? "" : '/' + area.url,
+                url: (typeof area.url == 'undefined' || area.url == '') ? "" :
+                        ((area.url.substring(0,4) == 'http') ? area.url : '/' + area.url),
                 selectable: false,
                 autoZoom: false
             }
