@@ -2,6 +2,6 @@ name = Drupal Ammap
 description = Drupal Ammap Module
 core = 7.x
 package = CMS
-version = 7.x-1.0
+version = 7.x-0.7
 project = drupal_ammap
 configure = admin/config/content/drupal_ammap
