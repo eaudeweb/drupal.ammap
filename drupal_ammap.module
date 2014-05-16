@@ -117,7 +117,7 @@ function drupal_ammap_render_map($data, $settings = array(), $legend = null, $st
         drupal_add_library('system', 'ui.slider');
     }
 
-    drupal_add_js("//wurfl.io/wurfl.js");
+    drupal_add_js("//wurfl.io/wurfl.js", 'external');
     drupal_add_js("$path/includes/ammap/ammap.js");
     //drupal_add_js("$path/includes/ammap/worldHigh.js");
     drupal_add_js("$path/includes/drupal_ammap.js");
