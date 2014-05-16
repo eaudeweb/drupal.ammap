@@ -2,53 +2,62 @@
  * Created by dragos on 2/6/14.
  */
 var drupal_ammap;
-AmCharts.ready(function() {
-    // create AmMap object
-     drupal_ammap = new AmCharts.AmMap();
 
-    // set path to images
-    drupal_ammap.pathToImages = Drupal.settings.drupal_ammap.ammapPath + '/images/';
+jQuery(document).ready(function() {
+    if(!WURFL.is_mobile) {
+    jQuery.getScript( Drupal.settings.drupal_ammap.ammapPath + '/worldHigh.js', function(script, textStatus, jqXHR) {
 
-    var rollOverOutlineColor = '#555555';
-    var selectedColor = '#555555';
+            // create AmMap object
+             drupal_ammap = new AmCharts.AmMap();
 
-    // Add countries data to Area Obj
-    var areas = drupal_ammap_parse_areas(Drupal.settings.drupal_ammap.ammapData);
+            // set path to images
+            drupal_ammap.pathToImages = Drupal.settings.drupal_ammap.ammapPath + '/images/';
 
-    var amdataProvider = {
-        mapVar: AmCharts.maps.worldHigh,
-        areas: areas
-    };
+            var rollOverOutlineColor = '#555555';
+            var selectedColor = '#555555';
 
-    // pass data provider to the map object
-    drupal_ammap.dataProvider = amdataProvider;
+            // Add countries data to Area Obj
+            var areas = drupal_ammap_parse_areas(Drupal.settings.drupal_ammap.ammapData);
 
-    drupal_ammap.areasSettings = {
-        autoZoom: true,
-        selectedColor: selectedColor,
-        //unlistedAreasColor: "#DDDDDD",
-        //rollOverColor: "#CC0000",
-        rollOverOutlineColor: rollOverOutlineColor,
-        balloonText: "<strong>[[title]]</strong><br/>[[customData]]",
-        showDescriptionOnHover: "true"
-    };
+            var amdataProvider = {
+                mapVar: AmCharts.maps.worldHigh,
+                areas: areas
+            };
 
-    /*Enlarge the title balloon*/
-    drupal_ammap.balloon.fontSize = '14px';
-    drupal_ammap.balloon.fillAlpha = '0.9';
+            // pass data provider to the map object
+            drupal_ammap.dataProvider = amdataProvider;
 
-    /*Change zoom control colors*/
-    drupal_ammap.zoomControl.buttonFillColor = "rgb(102, 135, 168)";
-    drupal_ammap.zoomControl.buttonRollOverColor= "rgb(102, 135, 168)";
+            drupal_ammap.areasSettings = {
+                autoZoom: true,
+                selectedColor: selectedColor,
+                //unlistedAreasColor: "#DDDDDD",
+                //rollOverColor: "#CC0000",
+                rollOverOutlineColor: rollOverOutlineColor,
+                balloonText: "<strong>[[title]]</strong><br/>[[customData]]",
+                showDescriptionOnHover: "true"
+            };
 
-    if ( typeof Drupal.settings.drupal_ammap.settings.legend != 'undefined' && Drupal.settings.drupal_ammap.settings.legend == true  ) {
-        var legend = drupal_ammap_parse_legend(Drupal.settings.drupal_ammap.legend);
-        // write the map to container div
-        drupal_ammap.addLegend(legend);
+            /*Enlarge the title balloon*/
+            drupal_ammap.balloon.fontSize = '14px';
+            drupal_ammap.balloon.fillAlpha = '0.9';
+
+            /*Change zoom control colors*/
+            drupal_ammap.zoomControl.buttonFillColor = "rgb(102, 135, 168)";
+            drupal_ammap.zoomControl.buttonRollOverColor= "rgb(102, 135, 168)";
+
+            if ( typeof Drupal.settings.drupal_ammap.settings.legend != 'undefined' && Drupal.settings.drupal_ammap.settings.legend == true  ) {
+                var legend = drupal_ammap_parse_legend(Drupal.settings.drupal_ammap.legend);
+                // write the map to container div
+                drupal_ammap.addLegend(legend);
+            }
+
+            drupal_ammap.write("drupal_ammap");
+        });
+
+    } else {
+        jQuery('#drupal_ammap').html(Drupal.settings.drupal_ammap.no_map_text).addClass('no_map');
     }
-
-    drupal_ammap.write("drupal_ammap");
-});
+} );
 
 /**
  * Function to construct the areas objects for ammap

@@ -7,3 +7,9 @@
 .drupal_ammap_clear {
     clear: both;
 }
+#drupal_ammap{
+    height: 480px;
+}
+#drupal_ammap.no_map{
+    height: auto;
+}
