@@ -55,7 +55,7 @@ jQuery(document).ready(function() {
         });
 
     } else {
-        jQuery('.drupal_ammap_container').html(Drupal.settings.drupal_ammap.no_map_text);
+        jQuery('.drupal_ammap_container').html(Drupal.settings.drupal_ammap.no_map_text).addClass('no_map');
     }
 } );
 

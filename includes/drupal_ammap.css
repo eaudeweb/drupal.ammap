@@ -13,3 +13,7 @@
 #drupal_ammap.no_map{
     height: auto;
 }
+
+#drupal_ammap > div > div:first-child {
+    position: relative !important;
+}

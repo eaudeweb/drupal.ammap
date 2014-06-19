@@ -88,7 +88,6 @@ function drupal_ammap_render_map($data, $settings = array(), $legend = null, $st
     if(!isset($settings['drupal_ammap_no_data_text'])) {
         $settings['drupal_ammap_no_data_text'] = variable_get('drupal_ammap_no_data_text', "No data to display");
     }
-
     $path = drupal_get_path('module', DRUPAL_AMMAP_NAME);
     if (empty($data)) {
         return theme_render_template($path . '/drupal_ammap.tpl.php',
@@ -123,11 +122,10 @@ function drupal_ammap_render_map($data, $settings = array(), $legend = null, $st
     drupal_add_js("$path/includes/drupal_ammap.js");
     drupal_add_js(array('drupal_ammap' => array('ammapPath' => '/' . $path . '/includes/ammap')), 'setting');
 
-    $mobile_no_map_text = variable_get('drupal_ammap_mobile_no_map_text', "The map is not available on mobile devices!");
+    $mobile_no_map_text = variable_get('drupal_ammap_mobile_no_map_text', "Sorry, the map is not available on mobile devices.");
     drupal_add_js(array('drupal_ammap' => array('no_map_text' => t($mobile_no_map_text))), 'setting');
 
     drupal_add_css("$path/includes/drupal_ammap.css");
-
     return theme_render_template($path . '/drupal_ammap.tpl.php',array(
             'data' => $data,
             'no_data_text' => $settings['drupal_ammap_no_data_text'],
