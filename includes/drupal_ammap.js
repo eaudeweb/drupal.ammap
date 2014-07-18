@@ -49,8 +49,8 @@ jQuery(document).ready(function() {
                 var legend = drupal_ammap_parse_legend(Drupal.settings.drupal_ammap.legend);
                 if (legend.data.length > 0 && !(legend.data.length == 1 && legend.data[0].title == '-')) {
                     drupal_ammap.addLegend(legend);
-                    drupal_ammap.validateData();
                 }
+                drupal_ammap.validateData();
             }
 
             drupal_ammap.write("drupal_ammap");
@@ -143,8 +143,8 @@ function drupal_ammap_get_data(ajax_endpoint, val) {
 
                     if (legend.length > 0 && !(legend.length == 1 && legend[0].title == '-')) {
                         drupal_ammap.addLegend(legend);
-                        drupal_ammap.validateData();
                     }
+                    drupal_ammap.validateData();
                 },
                 dataType: 'json'
             });
