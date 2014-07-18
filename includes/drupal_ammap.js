@@ -93,7 +93,7 @@ function drupal_ammap_parse_areas(data_areas) {
  */
 function drupal_ammap_parse_legend(data_legend) {
     var legend = {
-        width: 140 * Object.keys(data_legend).length,
+        width: 160 * Object.keys(data_legend).length,
         backgroundAlpha: 0.9,
         backgroundColor: "#FFFFFF",
         borderColor: "#666666",
