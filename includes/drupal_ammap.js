@@ -47,8 +47,10 @@ jQuery(document).ready(function() {
 
             if ( typeof Drupal.settings.drupal_ammap.settings.legend != 'undefined' && Drupal.settings.drupal_ammap.settings.legend == true  ) {
                 var legend = drupal_ammap_parse_legend(Drupal.settings.drupal_ammap.legend);
-                // write the map to container div
-                drupal_ammap.addLegend(legend);
+                if (legend.data.length > 0 && !(legend.data.length == 1 && legend.data[0].title == '-')) {
+                    drupal_ammap.addLegend(legend);
+                    drupal_ammap.validateData();
+                }
             }
 
             drupal_ammap.write("drupal_ammap");
@@ -91,7 +93,7 @@ function drupal_ammap_parse_areas(data_areas) {
  */
 function drupal_ammap_parse_legend(data_legend) {
     var legend = {
-        width: 120 * Object.keys(data_legend).length,
+        width: 140 * Object.keys(data_legend).length,
         backgroundAlpha: 0.9,
         backgroundColor: "#FFFFFF",
         borderColor: "#666666",
@@ -138,8 +140,11 @@ function drupal_ammap_get_data(ajax_endpoint, val) {
                 success: function(response) {
                     drupal_ammap.dataProvider.areas = drupal_ammap_parse_areas(response.ammapData);
                     var legend = drupal_ammap_parse_legend(response.legend);
-                    drupal_ammap.addLegend(legend);
-                    drupal_ammap.validateData();
+
+                    if (legend.length > 0 && !(legend.length == 1 && legend[0].title == '-')) {
+                        drupal_ammap.addLegend(legend);
+                        drupal_ammap.validateData();
+                    }
                 },
                 dataType: 'json'
             });
